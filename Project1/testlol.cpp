@@ -2,6 +2,8 @@
 #define UNICODE
 #endif
 
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
 
 #include <Windows.h>
 #include <d2d1.h>
@@ -10,9 +12,33 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
+HRESULT CreateDeviceIndependentResources()
+{
+	HRESULT hr;
+
+	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory_);
+
+	if (SUCCEEDED(hr))
+	{
+		if (SUCCEEDED(hr))
+		{
+			hr = DWriteCreateFactory(
+				DWRITE_FACTORY_TYPE_SHARED,
+				__uuidof(IDWriteFactory),
+				reinterpret_cast<IUnknown **>(&pDWriteFactory_)
+			);
+		}
+	}
+
+	wszText_ = L"Hello World";
+	cTextLength_ = (UINT32)wszText_;
+
+	return hr;
+}
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	WNDCLASSEXW wcex = { 0 };
+	WNDCLASSEX wcex = { 0 };
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW);
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -29,6 +55,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
+
+	CreateDeviceIndependentResources();
 
 	MSG msg;
 	while (GetMessage(&msg, nullptr, 0, 0))
