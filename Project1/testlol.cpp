@@ -24,8 +24,8 @@ HRESULT CreateDeviceIndependentResources()
 		{
 			hr = DWriteCreateFactory(
 				DWRITE_FACTORY_TYPE_SHARED,
-				__uuidof(IDWriteFactory),
-				reinterpret_cast<IUnknown **>(&pDWriteFactory_)
+				__uuidof(IDWriteFactory), 
+				reinterpret_cast<IUnknown**>(&pDWriteFactory_)
 			);
 		}
 	}
