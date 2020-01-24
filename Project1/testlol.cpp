@@ -30,24 +30,24 @@ HRESULT CreateDeviceIndependentResources()
 		}
 	}
 
-	wszText_ = L"Hello World";
+	wszText_ = L"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eu justo vel arcu iaculis ultrices. Nullam nisl quam, dictum at augue sed, luctus pharetra massa. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi imperdiet suscipit vestibulum. Sed euismod, velit blandit fringilla lacinia, est nunc finibus ipsum, sodales tincidunt tortor erat sed ex. Proin nisl arcu, viverra sagittis lectus nec, ultricies dignissim arcu. Sed sit amet dolor vel purus fringilla condimentum. Sed luctus rutrum justo, quis vestibulum massa varius non. Sed eu dolor erat. Mauris eget nibh justo. Phasellus nec risus a sapien tincidunt mattis id et nisl. In vitae odio ac nunc convallis tincidunt. Fusce eget tellus at enim egestas molestie. Vestibulum tortor nisi, porta eu luctus id, placerat et mi. Aliquam auctor aliquet lacus. Nulla ornare ipsum facilisis magna facilisis lobortis.";
 	cTextLength_ = (UINT32)wcslen(wszText_);
 
 	if (SUCCEEDED(hr))
 	{
 		hr = pDWriteFactory_->CreateTextFormat(
-			L"Gabriola",
+			L"Oswald",
 			NULL,
-			DWRITE_FONT_WEIGHT_REGULAR,
+			DWRITE_FONT_WEIGHT_NORMAL,
 			DWRITE_FONT_STYLE_NORMAL,
 			DWRITE_FONT_STRETCH_NORMAL,
-			72.0f,
+			20.0f,
 			L"en-us", &pTextFormat_);
 	}
 
 	if (SUCCEEDED(hr))
 	{
-		hr = pTextFormat_->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		hr = pTextFormat_->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	}
 
 	if (SUCCEEDED(hr))
@@ -69,7 +69,7 @@ HRESULT CreateDeviceResources(HWND hwnd_, RECT rc)
 	if (!pRT_)
 	{
 		D2D1_HWND_RENDER_TARGET_PROPERTIES hRTP = D2D1::HwndRenderTargetProperties(hwnd_, size);
-
+		
 		hr = pD2DFactory_->CreateHwndRenderTarget(
 			D2D1::RenderTargetProperties(), hRTP, &pRT_);
 	}
@@ -86,6 +86,8 @@ HRESULT CreateDeviceResources(HWND hwnd_, RECT rc)
 
 void DrawSomething(RECT rc, HWND hWnd)
 {
+	HRESULT hr;
+
 	GetClientRect(hWnd, &rc);
 
 	HDC screen = GetDC(hWnd);
@@ -97,8 +99,10 @@ void DrawSomething(RECT rc, HWND hWnd)
 		static_cast<FLOAT>(rc.top) / dpiScaleY_,
 		static_cast<FLOAT>(rc.right) / dpiScaleX_,
 		static_cast<FLOAT>(rc.bottom) / dpiScaleY_);
-
+	pRT_->BeginDraw();
+	pRT_->Clear(D2D1::ColorF(D2D1::ColorF::White));
 	pRT_->DrawText(wszText_, cTextLength_, pTextFormat_, layoutRect, pBlackBrush_);
+	hr = pRT_->EndDraw();
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -122,15 +126,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	HRESULT hr = CreateDeviceIndependentResources();
 
-	hr = CreateDeviceResources(hWnd, rc);
+	hr = CreateDeviceResources(hWnd, rc);	
+
+	ShowWindow(hWnd, nCmdShow);	
+	UpdateWindow(hWnd);
 
 	if (SUCCEEDED(hr))
 	{
 		DrawSomething(rc, hWnd);
 	}
-
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
 
 	MSG msg;
 	while (GetMessage(&msg, nullptr, 0, 0))

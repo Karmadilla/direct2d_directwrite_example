@@ -1,0 +1,18 @@
+<document>
+	<page id="1" pixelHeight="1056" pixelWidth="816" margin-left="96" margin-right="96" margin-top="96" margin-bottom="96">
+		<header>
+			<p>
+				Sample paragraph text
+			</p>
+		</header>
+		<body>
+			
+		</body>
+		<footer>
+			
+		</footer>
+	</page>
+	<page id="2" pixelHeight="1056" pixelWidth="816">
+
+	</page>
+</document>
